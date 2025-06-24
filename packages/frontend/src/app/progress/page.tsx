@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -21,7 +21,7 @@ export default function ProgressPage() {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     setLoading(true);
     try {
       const token = await getToken();
@@ -38,11 +38,11 @@ export default function ProgressPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getToken, toast]);
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [fetchTasks]);
 
   const handleToggleComplete = async (taskId: number) => {
     try {
