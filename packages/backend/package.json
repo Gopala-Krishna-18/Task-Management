@@ -1,0 +1,36 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@clerk/backend": "^2.1.0",
+    "@hono/clerk-auth": "^3.0.0",
+    "@hono/node-server": "^1.14.4",
+    "@neondatabase/serverless": "^1.0.1",
+    "@types/node-fetch": "^2.6.12",
+    "dotenv": "^16.5.0",
+    "drizzle-kit": "^0.31.1",
+    "drizzle-orm": "^0.44.2",
+    "hono": "^4.8.2",
+    "node-fetch": "^2.7.0",
+    "pg": "^8.16.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.15.4"
+  },
+  "type": "module"
+}
