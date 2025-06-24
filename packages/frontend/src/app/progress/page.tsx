@@ -19,8 +19,6 @@ export default function ProgressPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<"all" | "completed" | "not-completed">("all");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [completeLoading, setCompleteLoading] = useState<number | null>(null);
   const { toast } = useToast();
 
   const fetchTasks = async () => {
@@ -30,11 +28,11 @@ export default function ProgressPage() {
       if (!token) return;
       const data = await getTasks(token);
       setTasks(data.tasks);
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error("Error fetching tasks:", e);
       toast({
         title: "Error fetching tasks",
-        description: e.message,
+        description: e instanceof Error ? e.message : String(e),
         variant: "destructive",
       });
     } finally {
@@ -60,7 +58,7 @@ export default function ProgressPage() {
           t.id === taskId ? { ...t, completed: !t.completed } : t
         )
       );
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error("Error updating task:", e);
     }
   };
@@ -78,7 +76,7 @@ export default function ProgressPage() {
         description: "The task has been removed from your list.",
         variant: "default",
       });
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error("Error deleting task:", e);
       toast({
         title: "Error",

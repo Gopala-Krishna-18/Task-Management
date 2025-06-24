@@ -1,55 +1,20 @@
 'use client';
-import { currentUser } from "@clerk/nextjs/server";
-import { redirect, useRouter } from "next/navigation";
 import { UserButton, useAuth } from "@clerk/nextjs";
-import { useEffect, useState } from "react";
-import {
-  generateTasks,
-  getTasks,
-  createTask,
-  updateTask,
-  deleteTask,
-  setTaskCompleted,
-  getProgress,
-} from "@/lib/api";
+import { useState } from "react";
+import { generateTasks, createTask } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function DashboardPage() {
   const { getToken } = useAuth();
-  const router = useRouter();
   const { toast } = useToast();
   const [topic, setTopic] = useState("");
-  const [category, setCategory] = useState("");
-  const [tasks, setTasks] = useState([]);
-  const [progress, setProgress] = useState({ total: 0, completed: 0, percent: 0 });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [newTask, setNewTask] = useState("");
-  const [newCategory, setNewCategory] = useState("");
   const [generatedTasks, setGeneratedTasks] = useState<string[]>([]);
   const [addLoading, setAddLoading] = useState<number | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      const token = await getToken();
-      if (!token) return;
-      try {
-        setLoading(true);
-        const data = await getTasks(token, category);
-        setTasks(data.tasks);
-        const prog = await getProgress(token);
-        setProgress(prog);
-      } catch (e: any) {
-        setError(e.message);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [category, getToken]);
 
   const handleGenerate = async () => {
     setError("");
@@ -60,8 +25,8 @@ export default function DashboardPage() {
       const data = await generateTasks(token, topic);
       setGeneratedTasks(data.tasks);
       setTopic("");
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : String(e));
     } finally {
       setLoading(false);
     }
@@ -79,89 +44,15 @@ export default function DashboardPage() {
         description: "View it in My Progress to track completion.",
         variant: "default",
       });
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : String(e));
       toast({
         title: "Failed to add task",
-        description: e.message,
+        description: e instanceof Error ? e.message : String(e),
         variant: "destructive",
       });
     } finally {
       setAddLoading(null);
-    }
-  };
-
-  const handleCreate = async () => {
-    setError("");
-    setLoading(true);
-    try {
-      const token = await getToken();
-      if (!token) return;
-      await createTask(token, newTask, newCategory);
-      const updated = await getTasks(token, category);
-      setTasks(updated.tasks);
-      const prog = await getProgress(token);
-      setProgress(prog);
-      setNewTask("");
-      setNewCategory("");
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleUpdate = async (id: number, content: string, category?: string) => {
-    setError("");
-    setLoading(true);
-    try {
-      const token = await getToken();
-      if (!token) return;
-      await updateTask(token, id, content, category);
-      const updated = await getTasks(token, category);
-      setTasks(updated.tasks);
-      const prog = await getProgress(token);
-      setProgress(prog);
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    setError("");
-    setLoading(true);
-    try {
-      const token = await getToken();
-      if (!token) return;
-      await deleteTask(token, id);
-      const updated = await getTasks(token, category);
-      setTasks(updated.tasks);
-      const prog = await getProgress(token);
-      setProgress(prog);
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleComplete = async (id: number, completed: boolean) => {
-    setError("");
-    setLoading(true);
-    try {
-      const token = await getToken();
-      if (!token) return;
-      await setTaskCompleted(token, id, completed);
-      const updated = await getTasks(token, category);
-      setTasks(updated.tasks);
-      const prog = await getProgress(token);
-      setProgress(prog);
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
     }
   };
 
