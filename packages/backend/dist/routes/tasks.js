@@ -157,4 +157,16 @@ tasksRoute.get('/tasks/progress', async (c) => {
     const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
     return c.json({ total, completed, percent });
 });
+tasksRoute.delete("/:id", async (c) => {
+    const user = c.get("user");
+    const taskId = c.req.param("id");
+    try {
+        await db.delete(tasks).where(and(eq(tasks.id, parseInt(taskId)), eq(tasks.userId, user.id)));
+        return c.json({ message: "Task deleted successfully" }, 200);
+    }
+    catch (error) {
+        console.error("Error deleting task:", error);
+        return c.json({ error: "Failed to delete task" }, 500);
+    }
+});
 export default tasksRoute;
