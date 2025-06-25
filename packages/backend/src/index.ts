@@ -5,8 +5,10 @@ import { cors } from 'hono/cors'
 
 const app = new Hono()
 
+console.log('CORS_ORIGIN:', process.env.CORS_ORIGIN);
+
 app.use('*', cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  origin: '*', // TEMP: Allow all origins for debugging
   allowHeaders: ['Content-Type', 'Authorization'],
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   credentials: true
