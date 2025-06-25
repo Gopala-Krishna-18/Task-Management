@@ -1,4 +1,5 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE || "http://localhost:3001/api";
 
 export async function generateTasks(token: string, topic: string) {
   const res = await fetch(`${API_BASE}/tasks/generate`, {
